@@ -1,0 +1,33 @@
+{
+  "assistant_name": ["Кэролайн", "Кира", "Компьютер"],
+  "commands": [
+    {
+      "phrases": ["который час", "сколько времени"],
+      "function": "tell_time"
+    },
+    {
+      "phrases": ["какой сегодня день", "какое сегодня число"],
+      "function": "tell_date"
+    },
+    {
+      "phrases": ["игровой режим", "включи игровой режим"],
+      "function": "game_mode_on"
+    },
+    {
+      "phrases": ["выход из игрового режима", "выключи игровой режим"],
+      "function": "game_mode_off"
+    },
+    {
+      "phrases": ["включи свет"],
+      "function": "turn_all_on"
+    },
+    {
+      "phrases": ["выключи свет"],
+      "function": "turn_all_off"
+    },
+    {
+      "phrases": ["ночной свет"],
+      "function": "night_light"
+    }
+  ]
+}
