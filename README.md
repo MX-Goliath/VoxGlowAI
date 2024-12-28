@@ -4,7 +4,7 @@ The project is an AI-based voice assistant. A pulsating sphere, whose size chang
 
 To install the necessary python libraries, use the command:
 ```bash
-pip install ollama vosk pyaudio gigachat sounddevice omegaconf yeelight torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.6
+pip install -r requirements.txt
 ```
 
 To start the assistant, use the command:
