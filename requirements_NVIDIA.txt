@@ -1,0 +1,12 @@
+ollama
+numpy
+vosk
+pyaudio
+gigachat
+sounddevice
+omegaconf
+yeelight
+opencv-python
+torch
+torchvision
+torchaudio
