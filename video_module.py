@@ -17,7 +17,7 @@ class PulsatingSphereWindow:
 
 
         # Установка пользовательской иконки
-        icon_image = tk.PhotoImage(file='Remove-bg.ai_1722879097276.png')  # Замените 'path/to/your/icon.png' на путь к вашей иконке
+        icon_image = tk.PhotoImage(file='AI_Icon.png')  # Замените 'path/to/your/icon.png' на путь к вашей иконке
         self.root.iconphoto(False, icon_image)
 
 

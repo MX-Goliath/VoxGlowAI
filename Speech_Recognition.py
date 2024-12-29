@@ -1,6 +1,3 @@
-# pip install ollama && pip install vosk pyaudio && pip install gigachat && pip install sounddevice && pip install omegaconf && pip install yeelight && pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm5.6
-
-
 import sys
 import json
 import numpy as np
@@ -9,79 +6,86 @@ from vosk import Model, KaldiRecognizer
 import pyaudio
 import threading
 from datetime import datetime
-from tkinter import Button
+
+# Import the modified speech synthesis function
+from silero_speech import silero_nuero_speech
+# from OllamaChat import OllamaChat
+# from g4fChat import g4fAnswer
+# from Ollama_Function_Calling import Ollama_Funcrions
+from Ollama_Functions import Ollama_Function_Main
+from video_module import PulsatingSphereWindow  # Ensure this module is correctly implemented
 
 
-from silero_speech import *
-from OllamaChat import *
-from g4fChat import *
+model = Model("model-big")
+video_path = "AI_Visualisation.mp4"
 
-# Загрузка JSON файла с командами и настройками
+
+# Load commands and settings from JSON file
 with open("commands.json", "r", encoding="utf-8") as file:
     commands_data = json.load(file)
 
-# Функция для распознавания команды
-def recognize_command(text, commands):
-    print(commands["commands"])
-    for command in commands["commands"]:
-        for phrase in command["phrases"]:
-            if phrase in text:
-                return command["function"]
-    return None
-# Функции для выполнения команд
-def tell_time():
-    now = datetime.now()
-    return now.strftime("%H:%M")
 
-def tell_date():
-    today = datetime.now()
-    return today.strftime("%d %B %Y")
+# Initialize speech recognition
 
-# Словарь команд и соответствующих функций
-commands_dict = {
-    "tell_time": tell_time,
-    "tell_date": tell_date,
-}
-
-# Инициализация распознавания речи
-model = Model("model-small")
 sample_rate = 16000
 recognizer = KaldiRecognizer(model, sample_rate)
 p = pyaudio.PyAudio()
 stream = p.open(format=pyaudio.paInt16, channels=1, rate=sample_rate, input=True, frames_per_buffer=8000)
 
-# Функция для обработки аудио
+# Variables to control TTS playback
+tts_playback_thread = None
+stop_tts_playback = threading.Event()
+
+# Function to play TTS in a separate thread
+def play_tts(text):
+    global stop_tts_playback, tts_playback_thread
+    stop_tts_playback.clear()
+    def tts():
+        silero_nuero_speech(text, stop_event=stop_tts_playback)
+    tts_playback_thread = threading.Thread(target=tts)
+    tts_playback_thread.start()
+
+# Function to stop TTS playback
+def stop_tts():
+    global stop_tts_playback, tts_playback_thread
+    if tts_playback_thread and tts_playback_thread.is_alive():
+        stop_tts_playback.set()
+        tts_playback_thread.join()
+
+# Function to process audio input
 stop_audio_thread = False
 def audio_processing(window):
     print("Говорите...")
-    silero_nuero_speech('Системы инициализированы')
+    play_tts('Системы инициализированы')
     while not stop_audio_thread:
         try:
-            data = stream.read(8000, exception_on_overflow=False)
+            data = stream.read(2048, exception_on_overflow=False)
         except Exception as e:
             print(f"Ошибка чтения аудио потока: {e}")
             continue
 
         if recognizer.AcceptWaveform(data):
+            # Финальный результат готов
             result = json.loads(recognizer.Result()).get('text', '')
             print(f"Распознанный текст: {result}")
-            command_name = recognize_command(result, commands_data)
-            # print(f"Список команд: {commands_data[command_name]}")
 
-            if command_name in commands_dict:
-                response_function = commands_dict[command_name]
-                response = response_function()
-                print("Команда выполнена")
-                silero_nuero_speech(response)
+            # Проверяем, содержит ли текст имя ассистента
+            if any(name.lower() in result.lower() for name in commands_data.get("assistant_name", [])):
+                response = Ollama_Function_Main(result)
+                print(f"Ответ ассистента: {response}")
+                stop_tts()  # Останавливаем любое текущее воспроизведение TTS
+                play_tts(response)
             else:
-                print("Команда не распознана")
-                print(f"Список имен ассистента: {commands_data['assistant_name']}")
-                if any(name.lower() in result for name in commands_data["assistant_name"]):
-                    # response = OllamaChat(result)
-                    response = g4fAnswer(result)
-                    print(response)
-                    silero_nuero_speech(response)
+                print("Имя ассистента не обнаружено в команде.")
+        else:
+            # Промежуточный результат, речь продолжается
+            partial_result = recognizer.PartialResult()
+            partial_text = json.loads(partial_result).get('partial', '')
+            if partial_text.strip() != '':
+                print(f"Промежуточный результат: {partial_text}")
+                stop_tts()  # Останавливаем любое текущее воспроизведение TTS
 
+        # Вычисляем амплитуду для визуализации
         audio_data = np.frombuffer(data, dtype=np.int16).astype(np.float32)
         if len(audio_data) > 0 and np.any(audio_data):
             rms = np.sqrt(np.mean(audio_data ** 2))
@@ -91,27 +95,32 @@ def audio_processing(window):
             rms = 0.0
 
         amplitude = rms / 3000
-        print(f"Уровень амплитуды: {amplitude}")
+        # print(f"Уровень амплитуды: {amplitude}")
         window.set_amplitude(amplitude)
 
-# Функция для запуска окна и аудио
+
+
+# Initialize the GUI
 root = tk.Tk()
-video_path = "original-edddd691de851d37c06bf51df78011af.mp4"
-from video_module import PulsatingSphereWindow  # Импорт функции из отдельного файла
 window = PulsatingSphereWindow(root, video_path)
 
-# Запуск аудиообработки в отдельном потоке
+# Start audio processing in a separate thread
 audio_thread = threading.Thread(target=audio_processing, args=(window,))
 audio_thread.daemon = True
 audio_thread.start()
 
-# Функция для завершения работы
+# Function to cleanly exit the program
 def on_close():
     global stop_audio_thread
     stop_audio_thread = True
+    stop_tts()  # Stop any ongoing TTS playback
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
     root.destroy()
+    sys.exit()
 
 root.protocol("WM_DELETE_WINDOW", on_close)
 
-# Запуск основного цикла Tkinter
+# Start the Tkinter main loop
 root.mainloop()
