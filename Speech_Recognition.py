@@ -9,6 +9,7 @@ from datetime import datetime
 
 # Import the modified speech synthesis function
 from silero_speech import silero_nuero_speech
+from G4F_Function import G4F_Function_Main
 # from OllamaChat import OllamaChat
 # from g4fChat import g4fAnswer
 # from Ollama_Function_Calling import Ollama_Funcrions
@@ -72,6 +73,7 @@ def audio_processing(window):
             # Проверяем, содержит ли текст имя ассистента
             if any(name.lower() in result.lower() for name in commands_data.get("assistant_name", [])):
                 response = Ollama_Function_Main(result)
+                # response = G4F_Function_Main(result)
                 print(f"Ответ ассистента: {response}")
                 stop_tts()  # Останавливаем любое текущее воспроизведение TTS
                 play_tts(response)
