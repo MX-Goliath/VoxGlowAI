@@ -6,7 +6,14 @@ For low-performance PCs, it is recommended to use the **Vosk-small** model for y
 
 To call functions, the `functions` folder contains files with functions and docstrings so that the neural network understands when and what to call. To add your custom functions, create files in that folder similar to the existing ones. A single file can contain multiple functions, and they will be extracted individually.
 
+To use g4f instead of ollama, you need to comment out 
+response = Ollama_Function_Main(result)
+and uncomment
+response = G4F_Function_Main(result)
+in the main file.
+
 ![image](https://github.com/user-attachments/assets/dc0c3092-d674-4fab-acb6-abb97d4f36c1)
+
 
 ### **Installing Required Python Libraries**
 
@@ -30,5 +37,5 @@ python Speech_Recognition.py
 - [ ] Automatic configuration based on user-selected hardware characteristics  
 - [ ] Adding cloud speech recognition to reduce PC load  
 - [ ] Implementing lightweight speech generation to reduce PC load  
-- [ ] Function calling using g4f  
+- [x] Function calling using g4f  
 - [ ] Adding playback control functionality  
