@@ -1,18 +1,34 @@
-# VoxGlowAI
-The project is an AI-based voice assistant. A pulsating sphere, whose size changes based on the sound amplitude, is used for visualization. Speech recognition is handled by the local Vosk model, while the responses are synthesized using Silero. For generating meaningful responses, either a neural network with Ollama is used for local processing, or GPT-4o mini via g4f is employed for non-local computations. There are also modules for performing actions, such as controlling lights, computer applications, and more.
+**# VoxGlowAI**
+
+The project is an AI-based voice assistant. A pulsating sphere is used for visualization, whose size changes depending on the sound amplitude. Speech recognition is handled by the local Vosk model, while responses are generated using an LLM model, primarily Ollama. However, there is an option to use other models, such as those from g4f, with limited functionality in terms of function calling. The responses are voiced using Silero. Additionally, there are modules for performing actions such as controlling lighting, computer applications, and more.
+
+For low-performance PCs, it is recommended to use the **Vosk-small** model for your language. Models can be downloaded from the official website: [https://alphacephei.com/vosk/models](https://alphacephei.com/vosk/models). For low-performance PCs, it is also recommended to use **g4f** for generating responses, which will reduce response time for computers without CUDA support or with limited video memory.
+
+To call functions, the `functions` folder contains files with functions and docstrings so that the neural network understands when and what to call. To add your custom functions, create files in that folder similar to the existing ones. A single file can contain multiple functions, and they will be extracted individually.
+
 ![image](https://github.com/user-attachments/assets/dc0c3092-d674-4fab-acb6-abb97d4f36c1)
 
-To install the necessary python libraries, use the command if you have AMD GPU:
+### **Installing Required Python Libraries**
+
+For AMD GPU:
 ```bash
 pip install -r requirements.txt
 ```
 
-Or if NVIDIA GPU:
+For Nvidia GPU or CPU usage:
 ```bash
 pip install -r requirements_NVIDIA.txt
 ```
 
-To start the assistant, use the command:
+### **Running the Assistant**
+To launch the assistant, run:
 ```bash
 python Speech_Recognition.py
 ```
+
+### **Plans:**
+- [ ] Automatic configuration based on user-selected hardware characteristics  
+- [ ] Adding cloud speech recognition to reduce PC load  
+- [ ] Implementing lightweight speech generation to reduce PC load  
+- [ ] Function calling using g4f  
+- [ ] Adding playback control functionality  
