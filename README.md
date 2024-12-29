@@ -1,4 +1,4 @@
-**# VoxGlowAI**
+**VoxGlowAI**
 
 The project is an AI-based voice assistant. A pulsating sphere is used for visualization, whose size changes depending on the sound amplitude. Speech recognition is handled by the local Vosk model, while responses are generated using an LLM model, primarily Ollama. However, there is an option to use other models, such as those from g4f, with limited functionality in terms of function calling. The responses are voiced using Silero. Additionally, there are modules for performing actions such as controlling lighting, computer applications, and more.
 
