@@ -12,6 +12,8 @@ and uncomment
 response = G4F_Function_Main(result)
 in the main file.
 
+To add functions to g4f they need to be additionally written in system_prompt otherwise very bad calls
+
 ![image](https://github.com/user-attachments/assets/dc0c3092-d674-4fab-acb6-abb97d4f36c1)
 
 
