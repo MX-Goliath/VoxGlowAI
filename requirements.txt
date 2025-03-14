@@ -1,0 +1,14 @@
+ollama
+numpy
+vosk
+pyaudio
+gigachat
+sounddevice
+omegaconf
+yeelight
+opencv-python
+pyautogui
+g4f
+bs4
+duckduckgo_search
+requests
