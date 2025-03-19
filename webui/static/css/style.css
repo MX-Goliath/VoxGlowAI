@@ -1,0 +1,331 @@
+:root {
+    --primary-color: #7289DA;
+    --secondary-color: #6272B6;
+    --bg-color: #1F2030;
+    --bg-secondary: #282A36;
+    --text-color: #E4E6EF;
+    --text-secondary: #9A9CAA;
+    --accent-color: #50fa7b;
+    --error-color: #ff5555;
+    --border-color: #3B3D51;
+    --bubbles-user: #4E5398;
+    --bubbles-assistant: #34364A;
+    --bubble-hover: rgba(255, 255, 255, 0.05);
+    --bubble-active: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Основной контейнер приложения */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Заголовок */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-container h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Пульсирующий логотип */
+.logo-pulse {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    position: relative;
+    animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
+}
+
+.logo-pulse::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    z-index: -1;
+    animation: echo 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes echo {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Кнопки в заголовке */
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn:hover {
+    background-color: var(--bubble-hover);
+    color: var(--text-color);
+}
+
+.btn:active {
+    background-color: var(--bubble-active);
+}
+
+.clear-btn {
+    color: var(--text-secondary);
+}
+
+.clear-btn:hover {
+    color: var(--error-color);
+}
+
+/* Контейнер чата */
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Сообщения */
+.message {
+    display: flex;
+    margin-bottom: 16px;
+    max-width: 100%;
+}
+
+.message-content {
+    display: flex;
+    flex-direction: column;
+    max-width: 80%;
+}
+
+.message-bubble {
+    padding: 12px 16px;
+    border-radius: 18px;
+    position: relative;
+    word-break: break-word;
+}
+
+.message.user {
+    justify-content: flex-end;
+}
+
+.message.user .message-bubble {
+    background-color: var(--bubbles-user);
+    border-bottom-right-radius: 4px;
+}
+
+.message.assistant .message-bubble {
+    background-color: var(--bubbles-assistant);
+    border-bottom-left-radius: 4px;
+}
+
+.message p {
+    margin: 0;
+}
+
+.message p + p {
+    margin-top: 8px;
+}
+
+/* Контейнер ввода */
+.input-container {
+    padding: 20px;
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+.chat-form {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 8px 16px;
+    position: relative;
+}
+
+.input-wrapper:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(114, 137, 218, 0.2);
+}
+
+.chat-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px 0;
+    color: var(--text-color);
+    font-size: 1rem;
+    resize: none;
+    max-height: 200px;
+    outline: none;
+    width: 100%;
+}
+
+.chat-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.submit-btn {
+    background: transparent;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    margin-left: 8px;
+}
+
+.submit-btn:hover {
+    background-color: var(--bubble-hover);
+}
+
+.submit-btn:active {
+    background-color: var(--bubble-active);
+}
+
+.submit-btn:disabled {
+    color: var(--text-secondary);
+    cursor: not-allowed;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .app-header {
+        padding: 12px 16px;
+    }
+    
+    .logo-container h1 {
+        font-size: 1.2rem;
+    }
+    
+    .chat-container {
+        padding: 12px;
+    }
+    
+    .message-content {
+        max-width: 90%;
+    }
+    
+    .input-container {
+        padding: 12px;
+    }
+}
+
+/* Анимация загрузки для ожидания ответа */
+.loading-dots {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+}
+
+.loading-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--text-secondary);
+    margin: 0 2px;
+    animation: dot-flashing 1s infinite linear alternate;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes dot-flashing {
+    0% {
+        opacity: 0.2;
+    }
+    100% {
+        opacity: 1;
+    }
+} 
