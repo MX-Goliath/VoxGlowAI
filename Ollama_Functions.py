@@ -90,6 +90,7 @@ def Ollama_Function_Main(query: str):
     messages.append({'role': 'user', 'content': user_message})
 
     response = ollama.chat(
+        # 'mistral-nemo',
         'mistral-small',
         # 'phi4-mini',
         messages=messages,

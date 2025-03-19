@@ -19,7 +19,7 @@ model, _ = torch.hub.load(repo_or_dir='snakers4/silero-models',
 model.to(device)
 
 # aidar, baya, kseniya, xenia, eugene, random
-def silero_nuero_speech(text, speaker='baya', stop_event=None):
+def silero_nuero_speech(text, speaker='xenia', stop_event=None):
     """
     Function for speech synthesis using given text and speaker.
 

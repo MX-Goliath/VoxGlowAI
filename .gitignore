@@ -1,0 +1,22 @@
+# Игнорировать папки с кэшем Python
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+
+# Игнорировать виртуальное окружение
+.myenv/
+myenv/
+venv/
+
+# Игнорировать модели распознавания речи
+model-big/
+model-small/
+
+# Игнорировать временные файлы
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/

@@ -2,6 +2,10 @@ import sys
 import json
 import numpy as np
 import tkinter as tk
+
+from silero_speech import play_tts, stop_tts, is_speaking
+play_tts('Инициализация систем')
+
 from vosk import Model, KaldiRecognizer
 import pyaudio
 import threading
@@ -9,7 +13,7 @@ from datetime import datetime
 import signal
 
 # Import the modified speech synthesis function
-from silero_speech import play_tts, stop_tts, is_speaking
+
 # from G4F_Function import G4F_Function_Main
 # from OllamaChat import OllamaChat
 # from g4fChat import g4fAnswer
