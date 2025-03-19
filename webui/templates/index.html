@@ -9,54 +9,100 @@
     <link rel="icon" href="/static/img/favicon.ico" type="image/x-icon">
 </head>
 <body>
+    <!-- Анимация сферы на заднем фоне -->
+    <div class="sphere-container">
+        <canvas id="sphereCanvas"></canvas>
+    </div>
+    
     <div class="app-container">
-        <header class="app-header">
-            <div class="logo-container">
-                <div class="logo-pulse"></div>
-                <h1>VoxGlowAI</h1>
-            </div>
-            <div class="header-actions">
-                <button id="clearChat" class="btn clear-btn" title="Очистить чат">
+        <!-- Боковая панель с историей чатов -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>История чатов</h2>
+                <button id="newChatBtn" class="btn new-chat-btn" title="Новый чат">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
                     </svg>
+                    <span>Новый чат</span>
                 </button>
             </div>
-        </header>
-
-        <main class="chat-container">
-            <div id="chatMessages" class="chat-messages">
-                <div class="message assistant">
-                    <div class="message-content">
-                        <div class="message-bubble">
-                            <p>Привет! Я Кэролайн, ваш ассистент. Чем я могу помочь вам сегодня?</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <footer class="input-container">
-            <form id="chatForm" class="chat-form">
-                <div class="input-wrapper">
-                    <textarea 
-                        id="userInput" 
-                        class="chat-input" 
-                        placeholder="Введите сообщение..." 
-                        rows="1"
-                        autofocus
-                    ></textarea>
-                    <button type="submit" class="submit-btn" id="sendButton">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                            <path d="M15.854.146a.5.5 0 0 1 .11.54L11.525 7.5 16 14.5a.5.5 0 0 1-.777.416L5 8 .777 14.916A.5.5 0 0 1 0 14.5l4.5-7L0 .5a.5.5 0 0 1 .777-.416L11 7.084l4.777-6.538a.5.5 0 0 1 .077-.002z"/>
+            <div class="chat-history" id="chatHistory">
+                <div class="chat-history-item active">
+                    <span>Новый чат</span>
+                    <button class="delete-chat-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                         </svg>
                     </button>
                 </div>
-            </form>
-        </footer>
+            </div>
+            <div class="sidebar-footer">
+                <button id="toggleSidebarBtn" class="btn toggle-sidebar-btn" title="Скрыть панель">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                    </svg>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Основной контент -->
+        <div class="main-content">
+            <header class="app-header">
+                <div class="header-left">
+                    <button id="showSidebarBtn" class="btn show-sidebar-btn" title="Показать историю">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                    <div class="logo-container">
+                        <div class="logo-pulse"></div>
+                        <h1>VoxGlowAI</h1>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button id="clearChat" class="btn clear-btn" title="Очистить чат">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <main class="chat-container">
+                <div id="chatMessages" class="chat-messages">
+                    <div class="message assistant">
+                        <div class="message-content">
+                            <div class="message-bubble">
+                                <p>Привет! Я Кэролайн, ваш ассистент. Чем я могу помочь вам сегодня?</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="input-container">
+                <form id="chatForm" class="chat-form">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="userInput" 
+                            class="chat-input" 
+                            placeholder="Введите сообщение..." 
+                            rows="1"
+                            autofocus
+                        ></textarea>
+                        <button type="submit" class="submit-btn" id="sendButton">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M15.854.146a.5.5 0 0 1 .11.54L11.525 7.5 16 14.5a.5.5 0 0 1-.777.416L5 8 .777 14.916A.5.5 0 0 1 0 14.5l4.5-7L0 .5a.5.5 0 0 1 .777-.416L11 7.084l4.777-6.538a.5.5 0 0 1 .077-.002z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </footer>
+        </div>
     </div>
 
     <script src="/static/js/main.js"></script>
+    <script src="/static/js/sphere-animation.js"></script>
 </body>
 </html> 

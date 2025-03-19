@@ -1,17 +1,26 @@
 :root {
-    --primary-color: #7289DA;
-    --secondary-color: #6272B6;
-    --bg-color: #1F2030;
-    --bg-secondary: #282A36;
+    --primary-color: #d371ff;
+    --secondary-color: #9566b6;
+    --bg-color: #070824;
+    --bg-secondary: #101133;
     --text-color: #E4E6EF;
     --text-secondary: #9A9CAA;
-    --accent-color: #50fa7b;
+    --accent-color: #fc51ff;
     --error-color: #ff5555;
     --border-color: #3B3D51;
-    --bubbles-user: #4E5398;
-    --bubbles-assistant: #34364A;
+    --bubbles-user: #4a3f76;
+    --bubbles-assistant: #28243e;
     --bubble-hover: rgba(255, 255, 255, 0.05);
     --bubble-active: rgba(255, 255, 255, 0.1);
+    --sphere-color-1: #d371ff;
+    --sphere-color-2: #9566b6;
+    --sphere-color-3: #fc51ff;
+    --particle-color-1: #f15cff;
+    --particle-color-2: #5c6fff;
+    --sidebar-width: 300px;
+    --sidebar-collapsed-width: 0px;
+    --header-height: 60px;
+    --footer-height: 80px;
 }
 
 * {
@@ -28,15 +37,176 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+body.loaded {
+    opacity: 1;
+}
+
+/* Контейнер анимации сферы */
+.sphere-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+#sphereCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 
 /* Основной контейнер приложения */
 .app-container {
     display: flex;
-    flex-direction: column;
     height: 100vh;
-    max-width: 100%;
-    margin: 0 auto;
+    width: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Боковая панель (сайдбар) */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100%;
+    background-color: rgba(10, 11, 35, 0.8);
+    backdrop-filter: blur(10px);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, width 0.3s ease;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.sidebar.collapsed {
+    transform: translateX(calc(-1 * var(--sidebar-width)));
+    width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-header {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header h2 {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+.new-chat-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background-color: rgba(211, 113, 255, 0.1);
+    color: var(--primary-color);
+}
+
+.new-chat-btn:hover {
+    background-color: rgba(211, 113, 255, 0.2);
+}
+
+.chat-history {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.chat-history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.chat-history-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-history-item.active {
+    background-color: rgba(211, 113, 255, 0.15);
+    border-left: 3px solid var(--primary-color);
+}
+
+.chat-history-item span {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.delete-chat-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: none;
+}
+
+.chat-history-item:hover .delete-chat-btn {
+    display: block;
+}
+
+.delete-chat-btn:hover {
+    color: var(--error-color);
+}
+
+.sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+}
+
+.toggle-sidebar-btn {
+    background-color: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.show-sidebar-btn {
+    display: none;
+    margin-right: 10px;
+}
+
+.show-sidebar-btn.visible {
+    display: block;
+}
+
+/* Основной контент */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(7, 8, 36, 0.3);
+    backdrop-filter: blur(5px);
 }
 
 /* Заголовок */
@@ -45,9 +215,16 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 16px 24px;
-    background-color: var(--bg-secondary);
+    background-color: rgba(16, 17, 51, 0.7);
     border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    height: var(--header-height);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
 }
 
 .logo-container {
@@ -60,6 +237,7 @@ body {
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--primary-color);
+    text-shadow: 0 0 10px rgba(211, 113, 255, 0.5);
 }
 
 /* Пульсирующий логотип */
@@ -70,6 +248,7 @@ body {
     background-color: var(--primary-color);
     position: relative;
     animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    box-shadow: 0 0 15px var(--primary-color);
 }
 
 @keyframes pulse {
@@ -149,6 +328,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    height: calc(100vh - var(--header-height) - var(--footer-height));
 }
 
 .chat-messages {
@@ -165,6 +345,19 @@ body {
     display: flex;
     margin-bottom: 16px;
     max-width: 100%;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.message.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.message.fade-out {
+    opacity: 0;
+    transform: translateY(-10px);
 }
 
 .message-content {
@@ -178,6 +371,13 @@ body {
     border-radius: 18px;
     position: relative;
     word-break: break-word;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    transition: box-shadow 0.3s ease;
+}
+
+.message-bubble:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .message.user {
@@ -185,13 +385,15 @@ body {
 }
 
 .message.user .message-bubble {
-    background-color: var(--bubbles-user);
+    background-color: rgba(74, 63, 118, 0.7);
     border-bottom-right-radius: 4px;
+    border: 1px solid rgba(211, 113, 255, 0.3);
 }
 
 .message.assistant .message-bubble {
-    background-color: var(--bubbles-assistant);
+    background-color: rgba(40, 36, 62, 0.7);
     border-bottom-left-radius: 4px;
+    border: 1px solid rgba(211, 113, 255, 0.2);
 }
 
 .message p {
@@ -205,8 +407,10 @@ body {
 /* Контейнер ввода */
 .input-container {
     padding: 20px;
-    background-color: var(--bg-secondary);
+    background-color: rgba(16, 17, 51, 0.7);
     border-top: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    height: var(--footer-height);
 }
 
 .chat-form {
@@ -218,16 +422,17 @@ body {
 .input-wrapper {
     display: flex;
     align-items: center;
-    background-color: var(--bg-color);
+    background-color: rgba(7, 8, 36, 0.7);
     border: 1px solid var(--border-color);
     border-radius: 24px;
     padding: 8px 16px;
     position: relative;
+    box-shadow: 0 0 20px rgba(211, 113, 255, 0.1);
 }
 
 .input-wrapper:focus-within {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(114, 137, 218, 0.2);
+    box-shadow: 0 0 20px rgba(211, 113, 255, 0.4);
 }
 
 .chat-input {
@@ -257,16 +462,17 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: all 0.2s ease;
+    transition: transform 0.2s ease, color 0.2s ease, background-color 0.2s ease;
     margin-left: 8px;
 }
 
 .submit-btn:hover {
-    background-color: var(--bubble-hover);
+    transform: scale(1.1);
+    color: var(--accent-color);
 }
 
 .submit-btn:active {
-    background-color: var(--bubble-active);
+    transform: scale(0.95);
 }
 
 .submit-btn:disabled {
@@ -274,7 +480,99 @@ body {
     cursor: not-allowed;
 }
 
-/* Адаптивность для мобильных устройств */
+/* Стилизация скроллбара */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(16, 17, 51, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(211, 113, 255, 0.5);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(211, 113, 255, 0.7);
+}
+
+/* Анимация загрузки для ожидания ответа */
+.loading-dots {
+    display: inline-flex;
+    align-items: center;
+    height: 20px;
+}
+
+.loading-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    margin: 0 2px;
+    animation: 
+        dot-flashing 1s infinite linear alternate,
+        dot-pulse 1s infinite ease-in-out alternate;
+    box-shadow: 0 0 5px var(--primary-color);
+    transform: scale(1);
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes dot-flashing {
+    0% {
+        opacity: 0.2;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes dot-pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 5px var(--primary-color);
+    }
+    100% {
+        transform: scale(1.2);
+        box-shadow: 0 0 10px var(--primary-color);
+    }
+}
+
+/* Стилизация сообщений об ошибке */
+.message-bubble.error {
+    background-color: rgba(255, 85, 85, 0.2) !important;
+    border: 1px solid rgba(255, 85, 85, 0.5) !important;
+}
+
+/* Адаптивность для планшетов и мобильных */
+@media (max-width: 1024px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        z-index: 1000;
+        transform: translateX(-100%);
+        width: var(--sidebar-width);
+    }
+    
+    .sidebar.visible {
+        transform: translateX(0);
+    }
+    
+    .show-sidebar-btn {
+        display: block;
+    }
+}
+
 @media (max-width: 768px) {
     .app-header {
         padding: 12px 16px;
@@ -295,37 +593,8 @@ body {
     .input-container {
         padding: 12px;
     }
-}
-
-/* Анимация загрузки для ожидания ответа */
-.loading-dots {
-    display: inline-flex;
-    align-items: center;
-    height: 20px;
-}
-
-.loading-dots span {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: var(--text-secondary);
-    margin: 0 2px;
-    animation: dot-flashing 1s infinite linear alternate;
-}
-
-.loading-dots span:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.loading-dots span:nth-child(3) {
-    animation-delay: 0.4s;
-}
-
-@keyframes dot-flashing {
-    0% {
-        opacity: 0.2;
-    }
-    100% {
-        opacity: 1;
+    
+    .sidebar {
+        width: 85%;
     }
 } 
