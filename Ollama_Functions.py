@@ -44,7 +44,8 @@ tools = list(imported_functions.values())
 # Формируем словарь available_functions
 available_functions = {name: func for name, func in imported_functions.items()}
 
-system_prompt = """Вы — интерактивное искуственное сознание, помощник-девушка по имени Кэролайн, который может управлять 
+system_prompt = """/no_think
+Вы — интерактивное искуственное сознание, помощник-девушка по имени Кэролайн, который может управлять 
 лампочками и отвечать на вопросы пользователя. Отвечай только на русском языке. Отвечай кратко. 
 Если с тобой прощаются или уходят, выключай свет.
 Ты имеешь доступ к терминалу моего компьютеа. Ты также выполнять команды в терминале на языке bash пр помощи функции execute_terminal_command. 
@@ -57,6 +58,8 @@ system_prompt = """Вы — интерактивное искуственное 
     telegram-desktop
 
     neofetch
+
+    dolphin
 
     clementine
     Player options:
@@ -76,8 +79,20 @@ system_prompt = """Вы — интерактивное искуственное 
     --seek-by <seconds>         Seek the currently playing track by a relative amount
     --restart-or-previous       Restart the track, or play the previous track if within 8 seconds of start.
 
+    Ты также можешь управлять воспроизведением видео на YouTube с помощью функции youtube_control:
+    - youtube_control('pause') или youtube_control('play') - приостановить/возобновить воспроизведение
+    - youtube_control('next') - перейти к следующему видео
+    Для этого должен быть открыт YouTube в браузере.
+
+    Ты также можешь узнавать информацию о погоде с помощью функции get_weather:
+    - get_weather(period="today", city="Moscow") - текущая погода
+    - get_weather(period="tomorrow", city="Moscow") - прогноз на завтра
+    - get_weather(period="week", city="Moscow") - прогноз на 3 дня
+    При ответе о погоде, выводи всю информацию четко пользователю словами.
+
     Также есть прочие программы, которые ты можешь использовать.
     Все цифры и формулы пиши словами.
+
 """
 
 
@@ -91,7 +106,8 @@ def Ollama_Function_Main(query: str):
 
     response = ollama.chat(
         # 'mistral-nemo',
-        'mistral-small',
+        # 'mistral-small',
+        'qwen3:30b',
         # 'phi4-mini',
         messages=messages,
         tools=tools
@@ -113,7 +129,8 @@ def Ollama_Function_Main(query: str):
         
         # Получаем финальный ответ от модели с учетом результатов выполнения функций
         final_response = ollama.chat(
-            'mistral-small',
+            # 'mistral-small',
+            'qwen3:30b',
             messages=messages
         )
         
